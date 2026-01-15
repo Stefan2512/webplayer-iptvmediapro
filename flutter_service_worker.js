@@ -2,6 +2,7 @@
 const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
+const BASE_PATH = self.location.pathname.substring(0, self.location.pathname.lastIndexOf('/') + 1);
 
 const RESOURCES = {"assets/AssetManifest.bin": "f6765d30af2155fa345a628df0650a3a",
 "assets/AssetManifest.bin.json": "dc1cb7a64724323cee6960dd5e597a14",
@@ -39,10 +40,10 @@ const RESOURCES = {"assets/AssetManifest.bin": "f6765d30af2155fa345a628df0650a3a
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2ea3c",
 "icons/Icon-maskable-512.png": "301a7604d45b3e739efc881eb04896ea",
-"index.html": "7064b36b990868f111fe5f5111dda193",
-"/": "7064b36b990868f111fe5f5111dda193",
+"index.html": "84caa8ba3c6c1337929dcb2ffdc7fb1c",
+"/": "84caa8ba3c6c1337929dcb2ffdc7fb1c",
 "main.dart.js": "47606804db7e0295589199b012360875",
-"manifest.json": "c37ccbf3e3f74e3520d4468e72160915",
+"manifest.json": "5fe6ca6b9f52329fd539f0dec0976780",
 "version.json": "c2b3575b7dbccb527ab64ff8a0631645"};
 // The application shell files that are downloaded before a service worker can
 // start.
@@ -90,7 +91,7 @@ self.addEventListener("activate", function(event) {
       var oldManifest = await manifest.json();
       var origin = self.location.origin;
       for (var request of await contentCache.keys()) {
-        var key = request.url.substring(origin.length + 1);
+        var key = request.url.substring(origin.length + BASE_PATH.length);
         if (key == "") {
           key = "/";
         }
@@ -129,7 +130,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
   var origin = self.location.origin;
-  var key = event.request.url.substring(origin.length + 1);
+  var key = event.request.url.substring(origin.length + BASE_PATH.length);
   // Redirect URLs to the index.html
   if (key.indexOf('?v=') != -1) {
     key = key.split('?v=')[0];
@@ -179,8 +180,9 @@ async function downloadOffline() {
   var resources = [];
   var contentCache = await caches.open(CACHE_NAME);
   var currentContent = {};
+  var origin = self.location.origin;
   for (var request of await contentCache.keys()) {
-    var key = request.url.substring(origin.length + 1);
+    var key = request.url.substring(origin.length + BASE_PATH.length);
     if (key == "") {
       key = "/";
     }

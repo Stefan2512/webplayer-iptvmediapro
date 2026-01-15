@@ -1,7 +1,7 @@
 {
     "name": "iptv_media_pro",
     "short_name": "iptv_media_pro",
-    "start_url": ".",
+    "start_url": "/web-player/",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
